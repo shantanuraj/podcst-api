@@ -14,10 +14,12 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "hapi": "^16.1.1"
+    "hapi": "^16.1.1",
+    "ioredis": "^2.5.0"
   },
   "devDependencies": {
     "@types/hapi": "^16.0.3",
+    "@types/ioredis": "^0.0.23",
     "@types/node": "^7.0.13",
     "good": "^7.1.0",
     "good-console": "^6.4.0",
