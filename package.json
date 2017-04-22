@@ -9,7 +9,7 @@
     "pre": "yarn lint && yarn compile",
     "predev": "yarn pre",
     "prestart": "yarn pre",
-    "dev": "tsc -w & pm2 start build/index.js --watch",
+    "dev": "pm2 start ecosystem.config.js && tsc -w",
     "start": "pm2 start build/index.js -i 0 --no-daemon"
   },
   "dependencies": {
