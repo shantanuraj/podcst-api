@@ -3,6 +3,15 @@
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "lint": "tslint -c tslint.json --project tsconfig.json",
+    "compile": "tsc",
+    "pre": "yarn lint && yarn compile",
+    "predev": "yarn pre",
+    "prestart": "yarn pre",
+    "dev": "tsc -w & pm2 start build/index.js --watch",
+    "start": "pm2 start build/index.js -i 0 --no-daemon"
+  },
   "dependencies": {
     "axios": "^0.16.1",
     "hapi": "^16.1.1"
