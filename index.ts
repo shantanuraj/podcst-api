@@ -6,12 +6,12 @@
 
 import {
   initCache,
-} from './src/cache'
+} from './src/cache';
 import {
   createServer,
 } from './src/server';
 
-const main = async (message: string) => {
+const main = async () => {
   try {
     // Initiate Redis cache
     initCache();
@@ -25,4 +25,4 @@ const main = async (message: string) => {
   }
 };
 
-main('Hello, world');
+main();

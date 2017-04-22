@@ -2,6 +2,9 @@
  * iTunes typings
  */
 declare namespace iTunes {
+  interface Response {
+    results: Podcast[];
+  }
   interface Podcast {
     /**
      * Podcast author name
