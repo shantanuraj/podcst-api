@@ -4,9 +4,18 @@
 
 'use strict';
 
+import {
+  createServer,
+} from './src/server';
+
 const main = async (message: string) => {
-  const res = await message;
-  console.log(res);
+  try {
+    const server = await createServer();
+    await server.start();
+    console.log(`Server running at ${server.info.uri}`);
+  } catch(err) {
+    console.error(err);
+  }
 };
 
 main('Hello, world');
