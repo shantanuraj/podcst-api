@@ -5,7 +5,8 @@
 'use strict';
 
 import {
-  KEY_TOP_PODCASTS
+  CACHE_STALE_DELTA,
+  KEY_TOP_PODCASTS,
 } from './constants';
 import {
   initCache,
@@ -15,27 +16,45 @@ import {
 /**
  * Parse stringified JSON to Object
  */
-const parse = <T>(val: string) => JSON.parse(val) as T;
+const parse = <T>(val: string) => JSON.parse(val) as App.CachedEntity<T>;
 /**
  * Conver Object to JSON string
  */
-const stringify = <T>(val: T) => JSON.stringify(val);
+const stringify = <T>(val: App.CachedEntity<T>) => JSON.stringify(val);
 
 /**
- * Save to redis
+ * Save key, value pair to redis
  */
 const save = async <T>(key: string, value: T) => {
-  return redis.set(key, stringify(value))
+  return redis.set(key, stringify({
+      entity: value,
+      timestamp: Date.now(),
+    }))
     .catch(console.error);
-}
+};
 
 /**
- * Read from redis
+ * Read from redis checks if stored key is stale or fresh
  */
 const read = async <T>(key: string): Promise<T|null> => {
-  return redis.get(key)
-    .then(parse)
-    .catch(console.error);
+  try {
+    const res = await redis.get(key);
+    if (!res) {
+      return null;
+    }
+    const cached = parse<T>(res);
+    const { entity, timestamp } = cached;
+    if (
+      Date.now() - timestamp <= CACHE_STALE_DELTA // Cache is fresh
+    ) {
+      return entity;
+    } else {
+      return null; // Cache is stale
+    }
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 };
 
 /**
@@ -53,7 +72,7 @@ class Cache implements App.Cache {
     try {
       const podcasts = await read<App.Podcast[]>(KEY_TOP_PODCASTS);
       if (podcasts && podcasts.length >= count) {
-        return podcasts.slice(count);
+        return podcasts.slice(0, count);
       } else {
         return [];
       }

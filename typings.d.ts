@@ -158,4 +158,12 @@ declare namespace App {
   interface Cache {
     top: Top;
   }
+
+  /**
+   * Redis cached entity with timestamp
+   */
+  interface CachedEntity<T> {
+    timestamp: number;
+    entity: T;
+  }
 }
