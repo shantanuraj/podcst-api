@@ -9,7 +9,11 @@ import {
   ITUNES_API,
 } from './constants';
 
-const searcher = axios.create({
+import {
+  adaptResponse,
+} from './adapter';
+
+const fetcher = axios.create({
   baseURL: ITUNES_API + '/search',
   params: {
     country: 'US',
@@ -17,18 +21,21 @@ const searcher = axios.create({
   },
 });
 
-export const search = async (term: string): Promise<iTunes.Response> => {
+/**
+ * Returns list of podcasts from search
+ */
+export const search = async (term: string): Promise<App.Podcast[]> => {
   try {
-    const res = await searcher.request({
+    const res = await fetcher.request({
       params: { term },
     });
     if (res.status !== 200) {
       console.error('Could not perform search:', term);
-      return { results: [] };
+      return [];
     }
-    return res.data as iTunes.Response;
+    return adaptResponse(res.data as iTunes.Response);
   } catch(err) {
     console.error(err);
-    return { results: [] };
+    return [];
   }
 };

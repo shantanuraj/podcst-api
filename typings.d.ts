@@ -1,4 +1,9 @@
 /**
+ * Shared Explicit state type
+ */
+type ExplicitState = 'explicit' | 'cleaned' | 'notExplicit'
+
+/**
  * iTunes typings
  */
 declare namespace iTunes {
@@ -28,7 +33,7 @@ declare namespace iTunes {
     /**
      * Explicit status
      */
-    collectionExplicitness: 'explicit' | 'cleaned' | 'notExplicit';
+    collectionExplicitness: ExplicitState;
     /**
      * Podcast ID
      */
@@ -90,5 +95,56 @@ declare namespace iTunes {
         'im:id': string;
       }
     };
+  }
+}
+
+/**
+ * Application type dependencies
+ */
+declare namespace App {
+  /**
+   * Adapted Podcast interface
+   */
+  interface Podcast {
+    /**
+     * iTunes id of the podcast
+     */
+    id: number;
+    /**
+     * Podcast author
+     */
+    author: string;
+    /**
+     * Podcast website url
+     */
+    url: string;
+    /**
+     * Podcast rss feed
+     */
+    feed: string;
+    /**
+     * Podcast title
+     */
+    title: string;
+    /**
+     * Podcast large cover art
+     */
+    cover: string;
+    /**
+     * Podcast small cover art
+     */
+    thumbnail: string;
+    /**
+     * List of categories podcast appears in
+     */
+    categories: string[];
+    /**
+     * Podcast's explicitness
+     */
+    explicit: ExplicitState;
+    /**
+     * Podcast's episode count
+     */
+    count: number;
   }
 }
