@@ -19,5 +19,7 @@ export let redis: IRedis;
  * connection
  */
 export const initCache = () => {
-  redis = new Redis();
+  if (!redis) {
+    redis = new Redis();
+  }
 };

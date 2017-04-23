@@ -154,4 +154,8 @@ declare namespace App {
    * Top podcasts function interface
    */
   type Top = (count: number) => Promise<Podcast[]>;
+
+  interface Cache {
+    top: Top;
+  }
 }
