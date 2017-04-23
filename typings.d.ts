@@ -2,6 +2,9 @@
  * iTunes typings
  */
 declare namespace iTunes {
+  /**
+   * Search response interface
+   */
   interface Response {
     results: Podcast[];
   }
@@ -66,5 +69,26 @@ declare namespace iTunes {
      * Episodes count
      */
     trackCount: number;
+  }
+  /**
+   * Feed Response interface
+   */
+  interface FeedResponse {
+    feed: {
+      /**
+       * List of feed podcasts
+       */
+      entry: FeedPodcast[];
+    }
+  }
+  interface FeedPodcast {
+    id: {
+      attributes: {
+        /**
+         * Numeric string id
+         */
+        'im:id': string;
+      }
+    };
   }
 }
