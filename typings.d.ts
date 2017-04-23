@@ -137,7 +137,7 @@ declare namespace App {
     /**
      * List of categories podcast appears in
      */
-    categories: string[];
+    categories: number[];
     /**
      * Podcast's explicitness
      */

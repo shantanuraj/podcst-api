@@ -10,7 +10,7 @@
 export const adaptPodcast = (podcast: iTunes.Podcast): App.Podcast => ({
   id: podcast.collectionId,
   author: podcast.artistName,
-  categories: podcast.genreIds,
+  categories: podcast.genreIds.map(c => parseInt(c, 10)),
   count: podcast.trackCount,
   cover: podcast.artworkUrl600,
   explicit: podcast.collectionExplicitness,
