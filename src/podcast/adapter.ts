@@ -17,7 +17,6 @@ export const adaptPodcast = (podcast: iTunes.Podcast): App.Podcast => ({
   feed: podcast.feedUrl,
   thumbnail: podcast.artworkUrl100,
   title: podcast.collectionName,
-  url: podcast.feedUrl,
 });
 
 /**

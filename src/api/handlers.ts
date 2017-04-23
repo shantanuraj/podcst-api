@@ -12,7 +12,7 @@ import {
 import {
   search,
   top,
-} from '../podcast';
+} from '../data';
 
 import {
   DEFAULT_PODCASTS_COUNT,

@@ -21,7 +21,7 @@ const getUrl = (limit: number) => `${ITUNES_API}/us/rss/toppodcasts/limit=${limi
 /**
  * Get list of top podcasts from iTunes feed
  */
-export const top = async (count: number): Promise<App.Podcast[]> => {
+export const top: App.Top = async (count: number): Promise<App.Podcast[]> => {
   try {
     const url = getUrl(count);
     const res = await axios.get(url);

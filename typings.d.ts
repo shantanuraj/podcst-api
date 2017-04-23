@@ -115,10 +115,6 @@ declare namespace App {
      */
     author: string;
     /**
-     * Podcast website url
-     */
-    url: string;
-    /**
      * Podcast rss feed
      */
     feed: string;
@@ -147,4 +143,15 @@ declare namespace App {
      */
     count: number;
   }
+
+
+  /**
+   * Search function interface
+   */
+  type Search = (term: string) => Promise<Podcast[]>;
+
+  /**
+   * Top podcasts function interface
+   */
+  type Top = (count: number) => Promise<Podcast[]>;
 }
