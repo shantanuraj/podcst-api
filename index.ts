@@ -5,6 +5,11 @@
 'use strict';
 
 import {
+  connection,
+  routes,
+} from './src/api';
+
+import {
   initCache,
 } from './src/cache';
 import {
@@ -16,7 +21,7 @@ const main = async () => {
     // Initiate Redis cache
     initCache();
     // Configure server
-    const server = await createServer();
+    const server = await createServer(connection, routes);
     // Start server
     await server.start();
     console.log(`Server running at ${server.info.uri}`);

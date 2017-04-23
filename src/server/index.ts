@@ -4,21 +4,28 @@
 
 'use strict';
 
-import { Server } from 'hapi';
+import {
+  IRouteConfiguration,
+  IServerConnectionOptions,
+  Server,
+} from 'hapi';
 
-import config from './config';
 import {
   enableCors,
 } from './exts';
 import plugins from './plugins';
 
-export const createServer = async () => {
+export const createServer = async (
+  connection: IServerConnectionOptions,
+  routes: IRouteConfiguration[],
+) => {
   try {
     const server = new Server();
-    server.connection(config);
+    server.connection(connection);
     server.ext('onPreResponse', enableCors);
 
     await server.register(plugins);
+    server.route(routes);
 
     return server;
   } catch (err) {
