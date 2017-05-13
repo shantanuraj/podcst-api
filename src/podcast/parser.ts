@@ -19,7 +19,7 @@ const readFile = (file) => ({
 /**
  * Read data from json
  */
-const readDate = (ctx) => {
+const readDate = (ctx): number | null => {
   const data = ctx.pubDate || ctx.lastBuildDate;
   return data ? +(new Date(data[0])) : null;
 };
@@ -44,7 +44,7 @@ const indexToSecondsMap = {
 /**
  * Read duration from json
  */
-const readDuration = (ctx) => {
+const readDuration = (ctx: object): number | null => {
   const _data = ctx['itunes:duration'];
   if (!_data) {
     return null;
@@ -60,7 +60,7 @@ const readDuration = (ctx) => {
 /**
  * Read explicit status from json
  */
-const readExplicit = (ctx) => {
+const readExplicit = (ctx: object): boolean => {
   const data = ctx['itunes:explicit'];
   if (!Array.isArray(data)) {
     return false;
@@ -79,7 +79,7 @@ const readExplicit = (ctx) => {
 /**
  * Read episode artwork if present
  */
-const readEpisodeArtwork = (ctx) => {
+const readEpisodeArtwork = (ctx: object): string | null => {
   try {
     return ctx['media:content'][0]['$'].url;
   } catch(err) {
@@ -90,7 +90,7 @@ const readEpisodeArtwork = (ctx) => {
 /**
  * Read keywords from json
  */
-const readKeywords = (ctx) => {
+const readKeywords = (ctx: object): string[] => {
   const data = ctx['itunes:keywords'];
   if (!Array.isArray(data)) {
     return [];
@@ -101,7 +101,7 @@ const readKeywords = (ctx) => {
 /**
  * Read show notes
  */
-const readShowNotes = (ctx) => {
+const readShowNotes = (ctx: object): string | null => {
   try {
     const data = ctx['content:encoded'][0];
     return data;
@@ -113,7 +113,7 @@ const readShowNotes = (ctx) => {
 /**
  * Read cover
  */
-const readCover = (ctx) => {
+const readCover = (ctx): string | null => {
   try {
     const data = ctx['itunes:image'];
     return data[0]['$']['href'];
@@ -126,17 +126,17 @@ const readCover = (ctx) => {
  * Adapt episode json to formatted one
  */
 const adaptEpisode = (item) => ({
-  title: item.title[0],
+  title: item.title[0] as string,
   summary: readSummary(item),
   published: readDate(item),
   cover: readCover(item),
   explicit: readExplicit(item),
   duration: readDuration(item),
-  link: Array.isArray(item.link) ? item.link[0] : null,
+  link: Array.isArray(item.link) ? item.link[0] as string : null,
   file: readFile(item['enclosure'][0]['$']),
-  author: Array.isArray(item['itunes:author']) ? item['itunes:author'][0] : null,
+  author: Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null,
   episodeArt: readEpisodeArtwork(item),
-  showNotes: readShowNotes(item) || item.description[0],
+  showNotes: readShowNotes(item) || item.description[0] as string,
 });
 
 /**
