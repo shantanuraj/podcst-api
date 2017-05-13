@@ -27,7 +27,7 @@ const readDate = (ctx): number | null => {
 /**
  * Read summary from json
  */
-const readSummary = (ctx) => {
+const readSummary = (ctx): string | null => {
   const data = ctx['itunes:summary'] || ctx['itunes:subtitle'];
   return Array.isArray(data) ? data[0] : null;
 };
@@ -125,7 +125,7 @@ const readCover = (ctx): string | null => {
 /**
  * Adapt episode json to formatted one
  */
-const adaptEpisode = (item) => ({
+const adaptEpisode = (item): App.Episode => ({
   title: item.title[0] as string,
   summary: readSummary(item),
   published: readDate(item),

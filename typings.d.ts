@@ -144,6 +144,22 @@ declare namespace App {
     count: number;
   }
 
+  /**
+   * Adapted Episode interface
+   */
+  interface Episode {
+    title: string;
+    summary: string | null;
+    published: number | null;
+    cover: string | null;
+    explicit: boolean;
+    duration: number | null;
+    link: string | null;
+    file: any;
+    author: string | null;
+    episodeArt: string | null;
+    showNotes: string;
+  }
 
   /**
    * Search function interface
