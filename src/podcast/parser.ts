@@ -9,16 +9,6 @@ import {
 } from 'xml2js';
 
 /**
- * Helper funciton to parse xml to json via promises
- */
-export const xmlToJSON = (xml) => {
-  return new Promise((resolve, reject) => {
-    const { parseString } = new Parser();
-    parseString(xml, (err, res) => err ? reject(err) : resolve(res));
-  });
-}
-
-/**
  * Read itunes file prop
  */
 const readFile = (file) => ({
@@ -150,12 +140,22 @@ const adaptEpisode = (item) => ({
 });
 
 /**
+ * Helper funciton to parse xml to json via promises
+ */
+export const xmlToJSON = (xml) => {
+  return new Promise((resolve, reject) => {
+    const { parseString } = new Parser();
+    parseString(xml, (err, res) => err ? reject(err) : resolve(res));
+  });
+}
+
+/**
  * Adapt json to better format
  */
 export const adaptJSON = (json) => {
   try {
     const channel = json.rss.channel[0];
-    return Object.assign({}, {
+    return {
       title: channel.title[0],
       link: channel.link[0],
       published: readDate(channel),
@@ -165,9 +165,14 @@ export const adaptJSON = (json) => {
       keywords: readKeywords(channel),
       explicit: readExplicit(channel),
       episodes: channel['item'].map(adaptEpisode),
-    });
+    };
   } catch(err) {
     console.log(err);
     return {};
   }
 }
+
+/**
+ * Adapt xml to cleaned up json
+ */
+export const adaptFeed = async (xml) => xmlToJSON(xml).then(adaptJSON);
