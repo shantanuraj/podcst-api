@@ -6,12 +6,18 @@
 
 import {
   CACHE_STALE_DELTA,
+  KEY_PARSED_FEED,
   KEY_TOP_PODCASTS,
 } from './constants';
 import {
   initCache,
   redis,
 } from './index';
+
+/**
+ * Redis key for feed
+ */
+const feedKey = (url: string) => `${KEY_PARSED_FEED}-${url.trim()}`;
 
 /**
  * Parse stringified JSON to Object
@@ -77,7 +83,7 @@ class Cache implements App.Cache {
         return [];
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return [];
     }
   }
@@ -86,6 +92,24 @@ class Cache implements App.Cache {
    */
   async saveTop(podcasts: App.Podcast[]) {
     return save(KEY_TOP_PODCASTS, podcasts);
+  }
+  /**
+   * Get parsed feed from redis cache
+   */
+  async feed(url: string): Promise<App.EpisodeListing | null> {
+    try {
+      const feedData = await read<App.EpisodeListing>(feedKey(url));
+      return feedData;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+  /**
+   * Set top podcasts in redis cache
+   */
+  async saveFeed(url: string, feed: App.EpisodeListing) {
+    return save(feedKey(url), feed);
   }
 }
 

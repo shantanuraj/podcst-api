@@ -25,7 +25,18 @@ export const search: App.Search = async (term: string): Promise<App.Podcast[]> =
  * Podcast feed lookup
  */
 export const feed: App.FeedLookup = async (url: string): Promise<App.EpisodeListing | null> => {
-  return feedApi(url);
+  try {
+    let feedData = await cache.feed(url);
+    if (!feedData) {
+      feedData = await feedApi(url);
+      if (feedData) {
+        cache.saveFeed(url, feedData);
+      }
+    }
+    return feedData;
+  } catch(err) {
+    return null;
+  }
 };
 
 /**

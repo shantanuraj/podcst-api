@@ -10,6 +10,11 @@
 export const KEY_TOP_PODCASTS = 'top';
 
 /**
+ * Redis key for parsed Feed
+ */
+export const KEY_PARSED_FEED = 'feed';
+
+/**
  * Time delta to determine if cache is stale
  */
 export const CACHE_STALE_DELTA = 86400000; // 1 day

@@ -21,6 +21,11 @@ const routes: IRouteConfiguration[] = [
     method: 'GET',
     handler: handler.search,
   },
+  {
+    path: '/feed',
+    method: 'GET',
+    handler: handler.feed,
+  },
 ];
 
 export default routes;
