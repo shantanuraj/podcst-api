@@ -14,12 +14,7 @@ import {
 export const xmlToJSON = (xml) => {
   return new Promise((resolve, reject) => {
     const { parseString } = new Parser();
-    parseString(xml, (err, res) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(res);
-    });
+    parseString(xml, (err, res) => err ? reject(err) : resolve(res));
   });
 }
 
