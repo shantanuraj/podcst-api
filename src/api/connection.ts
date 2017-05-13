@@ -7,6 +7,6 @@ import {
 } from 'hapi';
 
 export default {
-  port: '5000',
+  port: '5001',
   labels: 'api',
 } as IServerConnectionOptions;
