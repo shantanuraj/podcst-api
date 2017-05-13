@@ -10,6 +10,7 @@ import {
 } from 'hapi';
 
 import {
+  feed,
   search,
   top,
 } from '../data';
@@ -30,4 +31,15 @@ export default {
       DEFAULT_PODCASTS_COUNT;
     reply(top(limit));
   },
+
+  feed(request: Request, reply: IReply) {
+    const url = request.query.url;
+    if (!url) {
+      reply({
+        message: 'Missing param url',
+      }).statusCode = 400;
+    } else {
+      reply(feed(url));
+    }
+  }
 };

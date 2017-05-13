@@ -7,6 +7,7 @@
 import Cache from '../cache/Cache';
 
 import {
+  feed as feedApi,
   search as searchApi,
   top as topApi,
 } from '../podcast';
@@ -18,6 +19,13 @@ const cache = new Cache();
  */
 export const search: App.Search = async (term: string): Promise<App.Podcast[]> => {
   return searchApi(term);
+};
+
+/**
+ * Podcast feed lookup
+ */
+export const feed: App.FeedLookup = async (url: string): Promise<App.EpisodeListing | null> => {
+  return feedApi(url);
 };
 
 /**

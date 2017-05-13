@@ -162,6 +162,21 @@ declare namespace App {
   }
 
   /**
+   * Episode listing
+   */
+  interface EpisodeListing {
+    title: string;
+    link: string;
+    published: number | null;
+    description: string;
+    author: string;
+    cover: string;
+    keywords: string[];
+    explicit: boolean;
+    episodes: Episode[];
+  }
+
+  /**
    * Search function interface
    */
   type Search = (term: string) => Promise<Podcast[]>;
@@ -170,6 +185,11 @@ declare namespace App {
    * Top podcasts function interface
    */
   type Top = (count: number) => Promise<Podcast[]>;
+
+  /**
+   * Feed lookup function interface
+   */
+  type FeedLookup = (url: string) => Promise<EpisodeListing | null>;
 
   interface Cache {
     top: Top;
