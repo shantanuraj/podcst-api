@@ -29,7 +29,7 @@ const readDate = (ctx): number | null => {
  */
 const readSummary = (ctx): string | null => {
   const data = ctx['itunes:summary'] || ctx['itunes:subtitle'];
-  return Array.isArray(data) ? data[0] : null;
+  return Array.isArray(data) ? data[0].trim() : null;
 };
 
 /**
@@ -103,7 +103,7 @@ const readKeywords = (ctx: object): string[] => {
  */
 const readShowNotes = (ctx: object): string | null => {
   try {
-    const data = ctx['content:encoded'][0];
+    const data = ctx['content:encoded'][0].trim();
     return data;
   } catch (err) {
     return null;
@@ -125,7 +125,7 @@ const readCover = (ctx): string | null => {
 /**
  * Adapt episode json to formatted one
  */
-const adaptEpisode = (item): App.Episode | null => {
+const adaptEpisode = (item, fallbackCover: string): App.Episode | null => {
   if (!item['enclosure']) {
     return null;
   }
@@ -134,7 +134,7 @@ const adaptEpisode = (item): App.Episode | null => {
     title: item.title[0] as string,
     summary: readSummary(item),
     published: readDate(item),
-    cover: readCover(item),
+    cover: readCover(item) || fallbackCover,
     explicit: readExplicit(item),
     duration: readDuration(item),
     link: Array.isArray(item.link) ? item.link[0] as string : null,
@@ -161,16 +161,19 @@ export const xmlToJSON = (xml: string) => {
 export const adaptJSON = (json): App.EpisodeListing | null => {
   try {
     const channel = json.rss.channel[0];
+    const cover = readCover(channel) as string;
     return {
-      title: channel.title[0],
+      title: channel.title[0].trim(),
       link: channel.link[0],
       published: readDate(channel),
-      description: channel.description[0],
+      description: channel.description[0].trim(),
       author: channel['itunes:author'][0],
       cover: channel['itunes:image'][0]['$']['href'],
       keywords: readKeywords(channel),
       explicit: readExplicit(channel),
-      episodes: channel['item'].map(adaptEpisode).filter(e => e !== null),
+      episodes: channel['item']
+        .map(e => adaptEpisode(e, cover))
+        .filter(e => e !== null),
     };
   } catch(err) {
     console.log(err);
