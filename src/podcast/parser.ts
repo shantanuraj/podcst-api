@@ -125,7 +125,7 @@ const readCover = (ctx): string | null => {
 /**
  * Adapt episode json to formatted one
  */
-const adaptEpisode = (item, fallbackCover: string): App.Episode | null => {
+const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.Episode | null => {
   if (!item['enclosure']) {
     return null;
   }
@@ -139,7 +139,7 @@ const adaptEpisode = (item, fallbackCover: string): App.Episode | null => {
     duration: readDuration(item),
     link: Array.isArray(item.link) ? item.link[0] as string : null,
     file: readFile(item['enclosure'][0]['$']),
-    author: Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null,
+    author: (Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null) || fallbackAuthor,
     episodeArt: readEpisodeArtwork(item),
     showNotes: readShowNotes(item) || item.description[0] as string,
   });
@@ -162,17 +162,18 @@ export const adaptJSON = (json): App.EpisodeListing | null => {
   try {
     const channel = json.rss.channel[0];
     const cover = readCover(channel) as string;
+    const author = channel['itunes:author'][0];
     return {
       title: channel.title[0].trim(),
       link: channel.link[0],
       published: readDate(channel),
       description: channel.description[0].trim(),
-      author: channel['itunes:author'][0],
-      cover: channel['itunes:image'][0]['$']['href'],
+      author: author,
+      cover: cover,
       keywords: readKeywords(channel),
       explicit: readExplicit(channel),
       episodes: channel['item']
-        .map(e => adaptEpisode(e, cover))
+        .map(e => adaptEpisode(e, cover, author))
         .filter(e => e !== null),
     };
   } catch(err) {
