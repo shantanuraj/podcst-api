@@ -125,19 +125,25 @@ const readCover = (ctx): string | null => {
 /**
  * Adapt episode json to formatted one
  */
-const adaptEpisode = (item): App.Episode => ({
-  title: item.title[0] as string,
-  summary: readSummary(item),
-  published: readDate(item),
-  cover: readCover(item),
-  explicit: readExplicit(item),
-  duration: readDuration(item),
-  link: Array.isArray(item.link) ? item.link[0] as string : null,
-  file: readFile(item['enclosure'][0]['$']),
-  author: Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null,
-  episodeArt: readEpisodeArtwork(item),
-  showNotes: readShowNotes(item) || item.description[0] as string,
-});
+const adaptEpisode = (item): App.Episode | null => {
+  if (!item['enclosure']) {
+    return null;
+  }
+
+  return ({
+    title: item.title[0] as string,
+    summary: readSummary(item),
+    published: readDate(item),
+    cover: readCover(item),
+    explicit: readExplicit(item),
+    duration: readDuration(item),
+    link: Array.isArray(item.link) ? item.link[0] as string : null,
+    file: readFile(item['enclosure'][0]['$']),
+    author: Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null,
+    episodeArt: readEpisodeArtwork(item),
+    showNotes: readShowNotes(item) || item.description[0] as string,
+  });
+}
 
 /**
  * Helper funciton to parse xml to json via promises
@@ -164,7 +170,7 @@ export const adaptJSON = (json): App.EpisodeListing | null => {
       cover: channel['itunes:image'][0]['$']['href'],
       keywords: readKeywords(channel),
       explicit: readExplicit(channel),
-      episodes: channel['item'].map(adaptEpisode),
+      episodes: channel['item'].map(adaptEpisode).filter(e => e !== null),
     };
   } catch(err) {
     console.log(err);
