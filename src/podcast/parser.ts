@@ -81,7 +81,18 @@ const readExplicit = (ctx: object): boolean => {
  */
 const readEpisodeArtwork = (ctx: object): string | null => {
   try {
-    return ctx['media:content'][0]['$'].url;
+    const url = ctx['media:content'][0]['$'].url;
+    const type: string | null = (
+      ctx['media:content'][0] &&
+      ctx['media:content'][0]['$'] &&
+      ctx['media:content'][0]['$'].type
+    ) || null;
+
+    if (type && type.indexOf('image')) {
+      return url;
+    } else {
+      return null;
+    }
   } catch(err) {
     return null;
   }
