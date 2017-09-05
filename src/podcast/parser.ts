@@ -88,7 +88,7 @@ const readEpisodeArtwork = (ctx: object): string | null => {
       ctx['media:content'][0]['$'].type
     ) || null;
 
-    if (type && type.indexOf('image')) {
+    if (type && type.includes('image')) {
       return url;
     } else {
       return null;
