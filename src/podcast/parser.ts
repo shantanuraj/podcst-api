@@ -123,13 +123,11 @@ const readKeywords = (ctx: object): string[] => {
 /**
  * Read show notes
  */
-const readShowNotes = (ctx: object): string | null => {
-  try {
-    const data = ctx['content:encoded'][0].trim();
-    return data;
-  } catch (err) {
-    return null;
-  }
+const readShowNotes = (ctx: object): string => {
+  const contentEncoded = (Array.isArray(ctx['content:encoded']) && ctx['content:encoded'][0]) || '';
+  const description = (Array.isArray(ctx['description']) && ctx['description'][0]) || '';
+  const summary = readSummary(ctx) || '';
+  return (contentEncoded || description || summary).trim();
 };
 
 /**
@@ -163,7 +161,7 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
     file: readFile(item['enclosure'][0]['$']),
     author: (Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null) || fallbackAuthor,
     episodeArt: readEpisodeArtwork(item),
-    showNotes: readShowNotes(item) || item.description[0] as string,
+    showNotes: readShowNotes(item),
   });
 }
 
