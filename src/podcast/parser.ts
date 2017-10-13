@@ -33,6 +33,17 @@ const readSummary = (ctx): string | null => {
 };
 
 /**
+ * Read description from json
+ */
+const readDescription = (ctx): string => {
+  return (
+    (Array.isArray(ctx.description) && (ctx.description[0] || '').trim()) ||
+    readSummary(ctx) ||
+    ''
+  );
+}
+
+/**
  * Map of index position to number of miliseconds
  */
 const indexToSecondsMap = {
@@ -178,7 +189,7 @@ export const adaptJSON = (json): App.EpisodeListing | null => {
       title: channel.title[0].trim(),
       link: channel.link[0],
       published: readDate(channel),
-      description: channel.description[0].trim(),
+      description: readDescription(channel),
       author: author,
       cover: cover,
       keywords: readKeywords(channel),
