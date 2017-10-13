@@ -17,12 +17,19 @@ import {
 
 import {
   DEFAULT_PODCASTS_COUNT,
+  URL_REGEX,
 } from './constants';
+
+import {
+  convertFeedToSearchResponse,
+} from './utils';
 
 export default {
   search(request: Request, reply: IReply) {
     const term = request.query.term;
-    reply(search(term));
+    const res: Promise<App.PodcastSearchResult[]> = URL_REGEX.test(term) ?
+      feed(term).then(convertFeedToSearchResponse(term)) : search(term);
+    reply(res);
   },
 
   popular(request: Request, reply: IReply) {

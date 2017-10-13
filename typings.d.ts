@@ -177,9 +177,19 @@ declare namespace App {
   }
 
   /**
+   * Podcasts Search result interface
+   */
+  interface PodcastSearchResult {
+    author: string;
+    feed: string;
+    thumbnail: string;
+    title: string;
+  }
+
+  /**
    * Search function interface
    */
-  type Search = (term: string) => Promise<Podcast[]>;
+  type Search = (term: string) => Promise<PodcastSearchResult[]>;
 
   /**
    * Top podcasts function interface

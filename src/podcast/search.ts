@@ -24,7 +24,7 @@ const fetcher = axios.create({
 /**
  * Returns list of podcasts from search
  */
-export const search: App.Search = async (term: string): Promise<App.Podcast[]> => {
+export const search: App.Search = async (term: string): Promise<App.PodcastSearchResult[]> => {
   try {
     const res = await fetcher.request({
       params: { term },

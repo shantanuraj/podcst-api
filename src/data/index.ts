@@ -17,7 +17,7 @@ const cache = new Cache();
 /**
  * Podcast search cache proxy
  */
-export const search: App.Search = async (term: string): Promise<App.Podcast[]> => {
+export const search: App.Search = async (term: string): Promise<App.PodcastSearchResult[]> => {
   return searchApi(term);
 };
 
