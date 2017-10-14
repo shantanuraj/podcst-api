@@ -143,6 +143,14 @@ const readCover = (ctx): string | null => {
 };
 
 /**
+ * Read link
+ */
+const readLink = (ctx): string | null => {
+  const link = Array. isArray(ctx.link) ? ctx.link[0] as string : null;
+  return link || ctx['guid'][0]['_'];
+}
+
+/**
  * Adapt episode json to formatted one
  */
 const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.Episode | null => {
@@ -157,7 +165,7 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
     cover: readCover(item) || fallbackCover,
     explicit: readExplicit(item),
     duration: readDuration(item),
-    link: Array.isArray(item.link) ? item.link[0] as string : null,
+    link: readLink(item),
     file: readFile(item['enclosure'][0]['$']),
     author: (Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null) || fallbackAuthor,
     episodeArt: readEpisodeArtwork(item),
