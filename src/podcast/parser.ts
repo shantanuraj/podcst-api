@@ -5,8 +5,17 @@
 'use strict';
 
 import {
+  parse as parseURL,
+  resolve,
+} from 'url';
+
+import {
   Parser,
 } from 'xml2js';
+
+import {
+  extractBaseLink,
+} from '../api/utils';
 
 /**
  * Read itunes file prop
@@ -133,10 +142,14 @@ const readShowNotes = (ctx: object): string => {
 /**
  * Read cover
  */
-const readCover = (ctx): string | null => {
+const readCover = (ctx, baseLink?: string | null): string | null => {
   try {
     const data = ctx['itunes:image'];
-    return data[0]['$']['href'];
+    const link = data[0]['$']['href'];
+    if (baseLink && parseURL(link).host === null) {
+      return resolve(baseLink, link);
+    }
+    return link;
   } catch (err) {
     return null;
   }
@@ -158,14 +171,16 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
     return null;
   }
 
+  const link = readLink(item);
+
   return ({
     title: item.title[0] as string,
     summary: readSummary(item),
     published: readDate(item),
-    cover: readCover(item) || fallbackCover,
+    cover: readCover(item, link) || fallbackCover,
     explicit: readExplicit(item),
     duration: readDuration(item),
-    link: readLink(item),
+    link,
     file: readFile(item['enclosure'][0]['$']),
     author: (Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null) || fallbackAuthor,
     episodeArt: readEpisodeArtwork(item),
