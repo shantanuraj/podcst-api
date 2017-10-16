@@ -15,7 +15,8 @@ import {
 
 import {
   extractBaseLink,
-} from '../api/utils';
+  reformatShowNotes,
+} from './utils';
 
 /**
  * Read itunes file prop
@@ -136,7 +137,7 @@ const readShowNotes = (ctx: object): string => {
   const contentEncoded = (Array.isArray(ctx['content:encoded']) && ctx['content:encoded'][0]) || '';
   const description = (Array.isArray(ctx['description']) && ctx['description'][0]) || '';
   const summary = readSummary(ctx) || '';
-  return (contentEncoded || description || summary).trim();
+  return reformatShowNotes(contentEncoded || description || summary).trim();
 };
 
 /**
