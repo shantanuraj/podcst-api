@@ -23,8 +23,9 @@ const feedKey = (url: string) => `${KEY_PARSED_FEED}-${url.trim()}`;
  * Parse stringified JSON to Object
  */
 const parse = <T>(val: string) => JSON.parse(val) as App.CachedEntity<T>;
+
 /**
- * Conver Object to JSON string
+ * Convert Object to JSON string
  */
 const stringify = <T>(val: App.CachedEntity<T>) => JSON.stringify(val);
 
