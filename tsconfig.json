@@ -6,9 +6,6 @@
         "sourceMap": true,
         "strictNullChecks": true,
         "experimentalDecorators": true,
-        "lib": [
-          "es2017"
-        ],
         "outDir": "build"
     }
 }
