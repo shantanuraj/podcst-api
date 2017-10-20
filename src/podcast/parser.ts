@@ -134,10 +134,10 @@ const readKeywords = (ctx: object): string[] => {
  * Read show notes
  */
 const readShowNotes = (ctx: object): string => {
-  const contentEncoded = (Array.isArray(ctx['content:encoded']) && ctx['content:encoded'][0]) || '';
   const description = (Array.isArray(ctx['description']) && ctx['description'][0]) || '';
+  const contentEncoded = (Array.isArray(ctx['content:encoded']) && ctx['content:encoded'][0]) || '';
   const summary = readSummary(ctx) || '';
-  return reformatShowNotes(contentEncoded || description || summary).trim();
+  return reformatShowNotes(description || contentEncoded || summary).trim();
 };
 
 /**
