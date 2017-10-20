@@ -39,7 +39,11 @@ const readDate = (ctx): number | null => {
  */
 const readSummary = (ctx): string | null => {
   const data = ctx['itunes:summary'] || ctx['itunes:subtitle'];
-  return Array.isArray(data) ? data[0].trim() : null;
+  if (Array.isArray(data)) {
+    return (data[0]['_'] || data[0]).trim();
+  }
+
+  return null;
 };
 
 /**
@@ -70,7 +74,7 @@ const readDuration = (ctx: object): number | null => {
   if (!_data) {
     return null;
   }
-  const data = _data[0];
+  const data = _data[0]['_'] || _data[0];
   if (data.indexOf(':') === -1) {
     return parseInt(data, 10);
   }
@@ -86,7 +90,7 @@ const readExplicit = (ctx: object): boolean => {
   if (!Array.isArray(data)) {
     return false;
   }
-  switch(data[0]) {
+  switch (data[0]) {
     case "no":
     case "clean":
       return false;
@@ -114,7 +118,7 @@ const readEpisodeArtwork = (ctx: object): string | null => {
     } else {
       return null;
     }
-  } catch(err) {
+  } catch (err) {
     return null;
   }
 }
@@ -127,7 +131,13 @@ const readKeywords = (ctx: object): string[] => {
   if (!Array.isArray(data)) {
     return [];
   }
-  return data[0].split(',').map(e => e.trim());
+  const record = data[0];
+  if (typeof record === 'string') {
+    return record.split(',').map(e => e.trim());
+  } else if (typeof record === 'object') {
+    return record['_'].split(',').map(e => e.trim());
+  }
+  return [];
 };
 
 /**
@@ -135,7 +145,7 @@ const readKeywords = (ctx: object): string[] => {
  */
 const readShowNotes = (ctx: object): string => {
   const description = (Array.isArray(ctx['description']) && ctx['description'][0]) || '';
-  const contentEncoded = (Array.isArray(ctx['content:encoded']) && ctx['content:encoded'][0]) || '';
+  const contentEncoded = (Array.isArray(ctx['content:encoded']) && (ctx['content:encoded'][0]['_'] || ctx['content:encoded'][0])) || '';
   const summary = readSummary(ctx) || '';
   return reformatShowNotes(description || contentEncoded || summary).trim();
 };
@@ -160,7 +170,7 @@ const readCover = (ctx, baseLink?: string | null): string | null => {
  * Read link
  */
 const readLink = (ctx): string | null => {
-  const link = Array. isArray(ctx.link) ? ctx.link[0] as string : null;
+  const link = Array.isArray(ctx.link) ? ctx.link[0] as string : null;
   return link || ctx['guid'][0]['_'];
 }
 
@@ -220,7 +230,7 @@ export const adaptJSON = (json): App.EpisodeListing | null => {
         .map(e => adaptEpisode(e, cover, author))
         .filter(e => e !== null),
     };
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return null;
   }

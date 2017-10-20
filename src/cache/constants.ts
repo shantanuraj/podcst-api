@@ -17,4 +17,4 @@ export const KEY_PARSED_FEED = 'feed';
 /**
  * Time delta to determine if cache is stale
  */
-export const CACHE_STALE_DELTA = 86400000; // 1 day
+export const CACHE_STALE_DELTA = 3600000; // 1 hour
