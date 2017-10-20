@@ -32,3 +32,8 @@ export const reformatShowNotes = (notes: string) => {
 
   return reformattedNotes;
 }
+
+/**
+ * Show notes count comparator
+ */
+export const showNotesSorter = (a: string, b: string) => (a.length - b.length);

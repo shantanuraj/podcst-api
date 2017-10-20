@@ -16,6 +16,7 @@ import {
 import {
   extractBaseLink,
   reformatShowNotes,
+  showNotesSorter,
 } from './utils';
 
 /**
@@ -147,7 +148,9 @@ const readShowNotes = (ctx: object): string => {
   const description = (Array.isArray(ctx['description']) && ctx['description'][0]) || '';
   const contentEncoded = (Array.isArray(ctx['content:encoded']) && (ctx['content:encoded'][0]['_'] || ctx['content:encoded'][0])) || '';
   const summary = readSummary(ctx) || '';
-  return reformatShowNotes(description || contentEncoded || summary).trim();
+
+  const notes = [description, contentEncoded, summary].sort(showNotesSorter)
+  return reformatShowNotes(notes[notes.length - 1]).trim();
 };
 
 /**
