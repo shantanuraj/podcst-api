@@ -4,25 +4,16 @@
 
 'use strict';
 
-import {
-  parse as parseURL,
-  resolve,
-} from 'url';
+import { parse as parseURL, resolve } from 'url';
 
-import {
-  Parser,
-} from 'xml2js';
+import { Parser } from 'xml2js';
 
-import {
-  extractBaseLink,
-  reformatShowNotes,
-  showNotesSorter,
-} from './utils';
+import { reformatShowNotes, showNotesSorter } from '../utils';
 
 /**
  * Read itunes file prop
  */
-const readFile = (file) => ({
+const readFile = file => ({
   ...file,
   length: parseInt(file.length, 10),
 });
@@ -32,7 +23,7 @@ const readFile = (file) => ({
  */
 const readDate = (ctx): number | null => {
   const data = ctx.pubDate || ctx.lastBuildDate;
-  return data ? +(new Date(data[0])) : null;
+  return data ? +new Date(data[0]) : null;
 };
 
 /**
@@ -52,11 +43,9 @@ const readSummary = (ctx): string | null => {
  */
 const readDescription = (ctx): string => {
   return (
-    (Array.isArray(ctx.description) && (ctx.description[0] || '').trim()) ||
-    readSummary(ctx) ||
-    ''
+    (Array.isArray(ctx.description) && (ctx.description[0] || '').trim()) || readSummary(ctx) || ''
   );
-}
+};
 
 /**
  * Map of index position to number of miliseconds
@@ -79,8 +68,11 @@ const readDuration = (ctx: object): number | null => {
   if (data.indexOf(':') === -1) {
     return parseInt(data, 10);
   }
-  const vals = data.split(':').map(e => parseInt(e, 10)).reverse();
-  return vals.reduce((acc, val, i) => acc + (val * indexToSecondsMap[i]), 0);
+  const vals = data
+    .split(':')
+    .map(e => parseInt(e, 10))
+    .reverse();
+  return vals.reduce((acc, val, i) => acc + val * indexToSecondsMap[i], 0);
 };
 
 /**
@@ -92,10 +84,10 @@ const readExplicit = (ctx: object): boolean => {
     return false;
   }
   switch (data[0]) {
-    case "no":
-    case "clean":
+    case 'no':
+    case 'clean':
       return false;
-    case "yes":
+    case 'yes':
       return true;
     default:
       return false;
@@ -108,11 +100,11 @@ const readExplicit = (ctx: object): boolean => {
 const readEpisodeArtwork = (ctx: object): string | null => {
   try {
     const url = ctx['media:content'][0]['$'].url;
-    const type: string | null = (
-      ctx['media:content'][0] &&
-      ctx['media:content'][0]['$'] &&
-      ctx['media:content'][0]['$'].type
-    ) || null;
+    const type: string | null =
+      (ctx['media:content'][0] &&
+        ctx['media:content'][0]['$'] &&
+        ctx['media:content'][0]['$'].type) ||
+      null;
 
     if (type && type.includes('image')) {
       return url;
@@ -122,7 +114,7 @@ const readEpisodeArtwork = (ctx: object): string | null => {
   } catch (err) {
     return null;
   }
-}
+};
 
 /**
  * Read keywords from json
@@ -146,10 +138,13 @@ const readKeywords = (ctx: object): string[] => {
  */
 const readShowNotes = (ctx: object): string => {
   const description = (Array.isArray(ctx['description']) && ctx['description'][0]) || '';
-  const contentEncoded = (Array.isArray(ctx['content:encoded']) && (ctx['content:encoded'][0]['_'] || ctx['content:encoded'][0])) || '';
+  const contentEncoded =
+    (Array.isArray(ctx['content:encoded']) &&
+      (ctx['content:encoded'][0]['_'] || ctx['content:encoded'][0])) ||
+    '';
   const summary = readSummary(ctx) || '';
 
-  const notes = [description, contentEncoded, summary].sort(showNotesSorter)
+  const notes = [description, contentEncoded, summary].sort(showNotesSorter);
   return reformatShowNotes(notes[notes.length - 1]).trim();
 };
 
@@ -173,9 +168,9 @@ const readCover = (ctx, baseLink?: string | null): string | null => {
  * Read link
  */
 const readLink = (ctx): string | null => {
-  const link = Array.isArray(ctx.link) ? ctx.link[0] as string : null;
+  const link = Array.isArray(ctx.link) ? (ctx.link[0] as string) : null;
   return link || ctx['guid'][0]['_'];
-}
+};
 
 /**
  * Adapt episode json to formatted one
@@ -187,7 +182,7 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
 
   const link = readLink(item);
 
-  return ({
+  return {
     title: item.title[0] as string,
     summary: readSummary(item),
     published: readDate(item),
@@ -196,11 +191,13 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
     duration: readDuration(item),
     link,
     file: readFile(item['enclosure'][0]['$']),
-    author: (Array.isArray(item['itunes:author']) ? item['itunes:author'][0] as string : null) || fallbackAuthor,
+    author:
+      (Array.isArray(item['itunes:author']) ? (item['itunes:author'][0] as string) : null) ||
+      fallbackAuthor,
     episodeArt: readEpisodeArtwork(item),
     showNotes: readShowNotes(item),
-  });
-}
+  };
+};
 
 /**
  * Helper funciton to parse xml to json via promises
@@ -208,9 +205,9 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
 export const xmlToJSON = (xml: string) => {
   return new Promise((resolve, reject) => {
     const { parseString } = new Parser();
-    parseString(xml, (err, res) => err ? reject(err) : resolve(res));
+    parseString(xml, (err, res) => (err ? reject(err) : resolve(res)));
   });
-}
+};
 
 /**
  * Adapt json to better format
@@ -229,15 +226,13 @@ export const adaptJSON = (json): App.EpisodeListing | null => {
       cover: cover,
       keywords: readKeywords(channel),
       explicit: readExplicit(channel),
-      episodes: channel['item']
-        .map(e => adaptEpisode(e, cover, author))
-        .filter(e => e !== null),
+      episodes: channel['item'].map(e => adaptEpisode(e, cover, author)).filter(e => e !== null),
     };
   } catch (err) {
     console.log(err);
     return null;
   }
-}
+};
 
 /**
  * Adapt xml to cleaned up json

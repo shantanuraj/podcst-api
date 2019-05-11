@@ -10,6 +10,6 @@
 export const DEFAULT_PODCASTS_COUNT = 30;
 
 /**
- * Url check regex
+ * Maximium number of podcasts returned by iTunes feed api
  */
-export const URL_REGEX = /^https?\:\//;
+export const MAX_PODCASTS_COUNT = 200;

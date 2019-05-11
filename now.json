@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "name": "podcst-api",
+  "alias": [
+    "data.podcst.app"
+  ],
+  "env": {
+    "PODCST_CACHE_ADDR": "@podcst-cache-addr"
+  },
+  "builds": [
+    {
+      "src": "./src/**/*.ts",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    { "src": "/feed", "dest": "src/api/feed.ts" },
+    { "src": "/search", "dest": "src/api/search.ts" },
+    { "src": "/top", "dest": "src/api/top.ts" },
+    { "src": "/(.*)", "dest": "src/api/not-found.ts" }
+  ]
+}

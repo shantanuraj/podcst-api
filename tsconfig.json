@@ -1,11 +1,11 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es2015",
-        "noImplicitAny": false,
-        "sourceMap": true,
-        "strictNullChecks": true,
-        "experimentalDecorators": true,
-        "outDir": "build"
-    }
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "outDir": "build"
+  }
 }

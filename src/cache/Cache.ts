@@ -4,15 +4,8 @@
 
 'use strict';
 
-import {
-  CACHE_STALE_DELTA,
-  KEY_PARSED_FEED,
-  KEY_TOP_PODCASTS,
-} from './constants';
-import {
-  initCache,
-  redis,
-} from './index';
+import { CACHE_STALE_DELTA, KEY_PARSED_FEED, KEY_TOP_PODCASTS } from './constants';
+import { initCache, redis } from './index';
 
 /**
  * Redis key for feed
@@ -33,17 +26,21 @@ const stringify = <T>(val: App.CachedEntity<T>) => JSON.stringify(val);
  * Save key, value pair to redis
  */
 const save = async <T>(key: string, value: T) => {
-  return redis.set(key, stringify({
-      entity: value,
-      timestamp: Date.now(),
-    }))
+  return redis
+    .set(
+      key,
+      stringify({
+        entity: value,
+        timestamp: Date.now(),
+      }),
+    )
     .catch(console.error);
 };
 
 /**
  * Read from redis checks if stored key is stale or fresh
  */
-const read = async <T>(key: string): Promise<T|null> => {
+const read = async <T>(key: string): Promise<T | null> => {
   try {
     const res = await redis.get(key);
     if (!res) {
@@ -52,7 +49,8 @@ const read = async <T>(key: string): Promise<T|null> => {
     const cached = parse<T>(res);
     const { entity, timestamp } = cached;
     if (
-      Date.now() - timestamp <= CACHE_STALE_DELTA // Cache is fresh
+      Date.now() - timestamp <=
+      CACHE_STALE_DELTA // Cache is fresh
     ) {
       return entity;
     } else {

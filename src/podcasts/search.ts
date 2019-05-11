@@ -3,15 +3,10 @@
  */
 
 import axios from 'axios';
-import { stringify } from 'querystring';
 
-import {
-  ITUNES_API,
-} from './constants';
+import { ITUNES_API } from './constants';
 
-import {
-  adaptResponse,
-} from './adapter';
+import { adaptResponse } from './adapter';
 
 const fetcher = axios.create({
   baseURL: ITUNES_API + '/search',
@@ -24,7 +19,7 @@ const fetcher = axios.create({
 /**
  * Returns list of podcasts from search
  */
-export const search: App.Search = async (term: string): Promise<App.PodcastSearchResult[]> => {
+const search: App.Search = async (term: string): Promise<App.PodcastSearchResult[]> => {
   try {
     const res = await fetcher.request({
       params: { term },
@@ -34,8 +29,10 @@ export const search: App.Search = async (term: string): Promise<App.PodcastSearc
       return [];
     }
     return adaptResponse(res.data as iTunes.Response);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     return [];
   }
 };
+
+export default search;

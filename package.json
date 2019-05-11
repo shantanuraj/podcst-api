@@ -1,34 +1,47 @@
 {
   "name": "podcst-api",
-  "version": "0.0.0",
-  "main": "index.js",
+  "version": "0.1.0",
+  "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "tslint -c tslint.json --project tsconfig.json",
-    "compile": "tsc",
-    "pre": "yarn lint && yarn compile",
-    "predev": "yarn pre",
-    "prestart": "yarn pre",
-    "dev": "pm2 start ecosystem.config.js && tsc -w",
-    "start": "pm2 start build/index.js -i 0 --no-daemon"
+    "deploy": "now",
+    "dev": "now dev"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "dependencies": {
-    "axios": "^0.16.1",
-    "hapi": "^16.1.1",
-    "ioredis": "^2.5.0",
-    "xml2js": "^0.4.17"
+    "axios": "^0.18.0",
+    "ioredis": "^4.9.3",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-logger": "^3.2.0",
+    "typescript": "^3.4.5",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "@types/hapi": "^16.0.3",
-    "@types/ioredis": "^0.0.23",
-    "@types/node": "^7.0.13",
-    "@types/xml2js": "^0.0.33",
-    "good": "^7.1.0",
-    "good-console": "^6.4.0",
-    "good-squeeze": "^5.0.2",
-    "inert": "^4.2.0",
-    "pm2": "^2.4.5",
-    "tslint": "^5.1.0",
-    "typescript": "^2.5.3"
+    "@types/ioredis": "^4.0.10",
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.2",
+    "@types/koa-logger": "^3.1.1",
+    "@types/node": "^12.0.0",
+    "@types/xml2js": "^0.4.4",
+    "husky": ">=1",
+    "lint-staged": ">=8",
+    "prettier": "1.17.0",
+    "tslint": "^5.16.0"
   }
 }

@@ -3,11 +3,8 @@
  */
 
 import axios from 'axios';
-import { stringify } from 'querystring';
 
-import {
-  adaptFeed,
-} from './parser';
+import { adaptFeed } from './parser';
 
 const fetcher = axios.create({
   method: 'GET',
@@ -17,7 +14,7 @@ const fetcher = axios.create({
 /**
  * Returns list of podcasts from search
  */
-export const feed: App.FeedLookup = async (url: string): Promise<App.EpisodeListing | null> => {
+const feed: App.FeedLookup = async (url: string): Promise<App.EpisodeListing | null> => {
   try {
     const res = await fetcher.request({ url });
     if (res.status !== 200) {
@@ -25,8 +22,10 @@ export const feed: App.FeedLookup = async (url: string): Promise<App.EpisodeList
       return null;
     }
     return adaptFeed(res.data as string) as any;
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     return null;
   }
 };
+
+export default feed;
