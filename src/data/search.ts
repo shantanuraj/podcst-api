@@ -9,7 +9,6 @@ import { search as searchApi } from '../podcasts';
 /**
  * Podcast search cache proxy
  */
-const search: App.Search = async (term: string): Promise<App.PodcastSearchResult[]> =>
-  searchApi(term);
+const search: App.Provider['search']['data'] = searchApi;
 
 export default search;

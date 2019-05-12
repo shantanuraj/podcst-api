@@ -1,6 +1,7 @@
 import * as Koa from 'koa';
 
 import { feed as feedData } from '../data';
+import { sendResponse } from '../utils/send-response';
 import { useHandler } from '../utils/use-handler';
 
 async function feed(ctx: Koa.Context) {
@@ -9,7 +10,7 @@ async function feed(ctx: Koa.Context) {
     return invalidUrl(ctx);
   }
   const res = await feedData(url);
-  ctx.body = res;
+  sendResponse(ctx, res);
 }
 
 function invalidUrl(ctx: Koa.Context) {

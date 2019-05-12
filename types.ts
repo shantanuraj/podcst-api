@@ -201,8 +201,14 @@ declare namespace App {
    */
   type FeedLookup = (url: string) => Promise<EpisodeListing | null>;
 
+  /**
+   * Cache response typewrapper
+   */
+  type CacheResponse<T> = Promise<App.CachedEntity<T>>;
+
   interface Cache {
-    top: Top;
+    top: Provider['top']['cache'];
+    feed: Provider['feed']['cache'];
   }
 
   /**
@@ -211,5 +217,27 @@ declare namespace App {
   interface CachedEntity<T> {
     timestamp: number;
     entity: T;
+  }
+
+  /**
+   * Data provider contract
+   */
+  interface Provider {
+    feed: {
+      api: (url: string) => Promise<EpisodeListing | null>;
+      cache: (url: string) => CacheResponse<EpisodeListing | null>;
+      data: (url: string) => CacheResponse<EpisodeListing | null>;
+    };
+
+    search: {
+      api: (term: string) => Promise<PodcastSearchResult[]>;
+      data: (term: string) => Promise<PodcastSearchResult[]>;
+    };
+
+    top: {
+      api: (count: number) => Promise<Podcast[]>;
+      cache: (count: number) => CacheResponse<Podcast[]>;
+      data: (count: number) => CacheResponse<Podcast[]>;
+    }
   }
 }

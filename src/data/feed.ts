@@ -7,24 +7,26 @@
 import Cache from '../cache/Cache';
 
 import { feed as feedApi } from '../podcasts';
+import { cacheMiss } from '../utils';
 
 const cache = new Cache();
 
 /**
  * Podcast feed lookup
  */
-const feed: App.FeedLookup = async (url: string): Promise<App.EpisodeListing | null> => {
+const feed: App.Provider['feed']['data'] = async (url) => {
   try {
-    let feedData = await cache.feed(url);
-    if (!feedData) {
-      feedData = await feedApi(url);
-      if (feedData) {
-        cache.saveFeed(url, feedData);
-      }
+    const cached = await cache.feed(url);
+    if (cached) {
+      return cached;
     }
-    return feedData;
+    const feedData = await feedApi(url);
+    if (feedData) {
+      cache.saveFeed(url, feedData);
+    }
+    return cacheMiss(feedData);
   } catch (err) {
-    return null;
+    return cacheMiss(null);
   }
 };
 

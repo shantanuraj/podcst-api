@@ -7,22 +7,24 @@
 import Cache from '../cache/Cache';
 
 import { top as topApi } from '../podcasts';
+import { cacheMiss, isCached } from '../utils';
 
 const cache = new Cache();
 
 /**
  * Top podcasts cache proxy
  */
-const top: App.Top = async (count: number): Promise<App.Podcast[]> => {
+const top: App.Provider['top']['data'] = async (count) => {
   try {
-    let podcasts = await cache.top(count);
-    if (podcasts.length === 0) {
-      podcasts = await topApi(count);
-      cache.saveTop(podcasts);
+    let data = await cache.top(count);
+    if (isCached(data) && data.entity.length > 0) {
+      return data;
     }
-    return podcasts;
+    let podcasts = await topApi(count);
+    cache.saveTop(podcasts);
+    return cacheMiss(podcasts);
   } catch (err) {
-    return [];
+    return cacheMiss([]);
   }
 };
 

@@ -7,6 +7,8 @@
 import { CACHE_STALE_DELTA, KEY_PARSED_FEED, KEY_TOP_PODCASTS } from './constants';
 import { initCache, redis } from './index';
 
+import { cacheHit, cacheMiss } from '../utils';
+
 /**
  * Redis key for feed
  */
@@ -40,25 +42,25 @@ const save = async <T>(key: string, value: T) => {
 /**
  * Read from redis checks if stored key is stale or fresh
  */
-const read = async <T>(key: string): Promise<T | null> => {
+const read = async <T>(key: string): App.CacheResponse<T | null> => {
   try {
     const res = await redis.get(key);
     if (!res) {
-      return null;
+      return cacheMiss(null);
     }
     const cached = parse<T>(res);
-    const { entity, timestamp } = cached;
+    const { timestamp } = cached;
     if (
       Date.now() - timestamp <=
       CACHE_STALE_DELTA // Cache is fresh
     ) {
-      return entity;
+      return cached;
     } else {
-      return null; // Cache is stale
+      return cacheMiss(null); // Cache is stale
     }
   } catch (err) {
     console.error(err);
-    return null;
+    return cacheMiss(null);
   }
 };
 
@@ -73,17 +75,18 @@ class Cache implements App.Cache {
   /**
    * Get top podcasts from redis cache
    */
-  async top(count: number): Promise<App.Podcast[]> {
+  async top(count: number) {
     try {
-      const podcasts = await read<App.Podcast[]>(KEY_TOP_PODCASTS);
-      if (podcasts && podcasts.length >= count) {
-        return podcasts.slice(0, count);
+      let cached = await read<App.Podcast[]>(KEY_TOP_PODCASTS);
+      if (cached.entity && cached.entity.length >= count) {
+        cached.entity = cached.entity.slice(0, count);
+        return cacheHit(cached);
       } else {
-        return [];
+        return cacheMiss([]);
       }
     } catch (err) {
       console.error(err);
-      return [];
+      return cacheMiss([]);
     }
   }
   /**
@@ -95,13 +98,13 @@ class Cache implements App.Cache {
   /**
    * Get parsed feed from redis cache
    */
-  async feed(url: string): Promise<App.EpisodeListing | null> {
+  async feed(url: string) {
     try {
-      const feedData = await read<App.EpisodeListing>(feedKey(url));
-      return feedData;
+      const cached = await read<App.EpisodeListing>(feedKey(url));
+      return cached;
     } catch (err) {
       console.error(err);
-      return null;
+      return cacheMiss(null);
     }
   }
   /**

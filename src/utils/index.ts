@@ -4,6 +4,7 @@
 
 'use strict';
 
+import { Context } from 'koa';
 import { parse } from 'url';
 
 /**
@@ -41,7 +42,7 @@ export const showNotesSorter = (a: string, b: string) => a.length - b.length;
  * Convert feed response to search response
  */
 export const feedToSearchResponse = (feed: string) => (
-  res: App.EpisodeListing | null,
+  { entity: res }: App.CachedEntity<App.EpisodeListing | null>,
 ): App.PodcastSearchResult[] =>
   res
     ? [
@@ -63,3 +64,27 @@ const URL_REGEX = /^https?\:\//;
  * Returns true if given string is url-like
  */
 export const isURL = (str: string) => URL_REGEX.test(str);
+
+/**
+ * Cache miss helper
+ */
+export const cacheMiss = <T>(entity: T) => ({ entity, timestamp: 0 });
+
+/**
+ * Cache hit helper (removes nullability from return type)
+ */
+export const cacheHit = <T>(entry: App.CachedEntity<T | null>) => entry as App.CachedEntity<T>;
+
+/**
+ * Returns true if given object is a cache hit
+ */
+export const isCached = <T>(entry: App.CachedEntity<T>) => entry.timestamp !== 0;
+
+/**
+ * Headers utlities
+ */
+export const headers = {
+  cache: (ctx: Context, expiry: number) => {
+    ctx.set('Cache-Control', `s-maxage=${expiry}, max-age=0`);
+  },
+};
