@@ -7,7 +7,7 @@
 import Cache from '../cache/Cache';
 
 import { feed as feedApi } from '../podcasts';
-import { cacheMiss } from '../utils';
+import { cacheMiss, isCached } from '../utils';
 
 const cache = new Cache();
 
@@ -16,9 +16,9 @@ const cache = new Cache();
  */
 const feed: App.Provider['feed']['data'] = async (url) => {
   try {
-    const cached = await cache.feed(url);
-    if (cached) {
-      return cached;
+    const data = await cache.feed(url);
+    if (isCached(data)) {
+      return data;
     }
     const feedData = await feedApi(url);
     if (feedData) {
