@@ -148,6 +148,7 @@ declare namespace App {
    * Adapted Episode interface
    */
   interface Episode {
+    guid: string;
     title: string;
     summary: string | null;
     published: number | null;

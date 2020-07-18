@@ -178,6 +178,14 @@ const readLink = (ctx): string | null => {
 }
 
 /**
+ * Read GUID
+ */
+const readGuid = (ctx): string => {
+  const guid = ctx['guid'][0] || '';
+  return guid['_'] || guid;
+};
+
+/**
  * Adapt episode json to formatted one
  */
 const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.Episode | null => {
@@ -185,9 +193,11 @@ const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.
     return null;
   }
 
+  const guid = readGuid(item);
   const link = readLink(item);
 
   return ({
+    guid,
     title: item.title[0] as string,
     summary: readSummary(item),
     published: readDate(item),
