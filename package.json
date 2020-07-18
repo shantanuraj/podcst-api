@@ -10,7 +10,7 @@
     "predev": "yarn pre",
     "prestart": "yarn pre",
     "dev": "pm2 start ecosystem.config.js && tsc -w",
-    "start": "pm2 start build/index.js -i 0 --no-daemon"
+    "start": "pm2 start build/index.js -i 0"
   },
   "dependencies": {
     "axios": "^0.16.1",
