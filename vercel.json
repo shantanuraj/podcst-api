@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "alias": ["data.podcst.app"],
+  "env": {
+    "PODCST_CACHE_ADDR": "@podcst-cache-addr"
+  },
+  "routes": [
+    { "src": "/feed", "dest": "api/feed.ts" },
+    { "src": "/search", "dest": "api/search.ts" },
+    { "src": "/top", "dest": "api/top.ts" },
+    { "src": "/(.*)", "dest": "api/not-found.ts" }
+  ]
+}

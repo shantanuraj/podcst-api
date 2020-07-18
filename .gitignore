@@ -91,3 +91,5 @@ build
 
 # Env var
 .env
+
+.vercel

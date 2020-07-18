@@ -1,11 +1,10 @@
 {
   "name": "podcst-api",
   "version": "0.1.0",
-  "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "deploy": "now",
-    "dev": "now dev"
+    "deploy": "vercel",
+    "debug": "vercel dev"
   },
   "prettier": {
     "printWidth": 100,
