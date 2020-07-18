@@ -4,7 +4,7 @@
 
 'use strict';
 
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 import { Redis as IRedis } from 'ioredis';
 
 /**

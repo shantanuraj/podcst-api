@@ -1,6 +1,6 @@
-import * as Koa from 'koa';
-import * as bodyParser from 'koa-bodyparser';
-import * as logger from 'koa-logger';
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import logger from 'koa-logger';
 
 async function successMiddleware(ctx: Koa.Context, next: Function) {
   ctx.res.statusCode = 200;
