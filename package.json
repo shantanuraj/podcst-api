@@ -23,7 +23,7 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "ioredis": "^4.17.3",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
