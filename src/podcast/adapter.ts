@@ -14,7 +14,7 @@ export const adaptPodcast = (podcast: iTunes.Podcast): App.Podcast => ({
   count: podcast.trackCount,
   cover: podcast.artworkUrl600,
   explicit: podcast.collectionExplicitness,
-  feed: podcast.feedUrl,
+  feed: podcast.feedUrl || feedURLExceptions[podcast.collectionId],
   thumbnail: podcast.artworkUrl100,
   title: podcast.collectionName,
 });
@@ -23,3 +23,10 @@ export const adaptPodcast = (podcast: iTunes.Podcast): App.Podcast => ({
  * Adapt iTunes response
  */
 export const adaptResponse = (res: iTunes.Response) => res.results.map(adaptPodcast);
+
+/**
+ * Feed URL exceptions
+ */
+const feedURLExceptions = {
+  1473872585: 'https://apple.news/podcast/apple_news_today',
+};

@@ -3,7 +3,6 @@
  */
 
 import axios from 'axios';
-import { stringify } from 'querystring';
 
 import {
   ITUNES_API,
