@@ -1,7 +1,7 @@
 /**
  * Shared Explicit state type
  */
-type ExplicitState = 'explicit' | 'cleaned' | 'notExplicit'
+type ExplicitState = 'explicit' | 'cleaned' | 'notExplicit';
 
 /**
  * iTunes typings
@@ -84,7 +84,7 @@ declare namespace iTunes {
        * List of feed podcasts
        */
       entry: FeedPodcast[];
-    }
+    };
   }
   interface FeedPodcast {
     id: {
@@ -93,7 +93,7 @@ declare namespace iTunes {
          * Numeric string id
          */
         'im:id': string;
-      }
+      };
     };
   }
 }
@@ -148,6 +148,7 @@ declare namespace App {
    * Adapted Episode interface
    */
   interface Episode {
+    guid: string;
     title: string;
     summary: string | null;
     published: number | null;
@@ -238,6 +239,6 @@ declare namespace App {
       api: (count: number) => Promise<Podcast[]>;
       cache: (count: number) => CacheResponse<Podcast[]>;
       data: (count: number) => CacheResponse<Podcast[]>;
-    }
+    };
   }
 }
