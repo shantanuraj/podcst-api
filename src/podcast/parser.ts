@@ -186,6 +186,18 @@ const readGuid = (ctx): string => {
 };
 
 /**
+ * Read feed link
+ */
+const readFeedLink = (ctx: object): string => {
+  if (Array.isArray(ctx['link'])) {
+    return ctx['link'][0]
+  } else if (Array.isArray(ctx['atom:link'])) {
+    return (ctx['atom:link'][0].$ || { href: ''}).href || ''
+  }
+  return ''
+};
+
+/**
  * Adapt episode json to formatted one
  */
 const adaptEpisode = (item, fallbackCover: string, fallbackAuthor: string): App.Episode | null => {
@@ -232,7 +244,7 @@ export const adaptJSON = (json): App.EpisodeListing | null => {
     const author = channel['itunes:author'][0];
     return {
       title: channel.title[0].trim(),
-      link: channel.link[0],
+      link: readFeedLink(channel),
       published: readDate(channel),
       description: readDescription(channel),
       author: author,
